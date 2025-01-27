@@ -1,3 +1,3 @@
-## README
+## Single cell Correlation Analysis (SCA)
 
-Single cell Correlation Analysis (SCA)
+
