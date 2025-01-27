@@ -1,0 +1,60 @@
+---
+title: "Introduction to SCA"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SCA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(SCA)
+library(dplyr)
+library(tibble)
+```
+
+This is the introduction to Single cell Correlation Analysis (SCA). 
+
+SCA manuscript is available in bioRxiv (doi: xxx)
+we will use quick version of SCA usage using the normal hematopoietic stem and progenitor cells (HSPC) data.
+Velten et al (2017) HSPC
+van Galen et al (2019) HSPC (BM5)
+```{r load_data}
+data("Velten_HSPC")
+data("vanGalen_HSPC")
+
+```
+
+user can use extract_reference_profile function to extract reference profile from scRNAseq data
+```{r extract_reference_profile}
+
+ref_data_use<-Velten_HSPC
+query_data_use<-Velten_HSPC
+ref_cell_type_use<-"LT-HSC"
+cell_type_use<-"LT-HSC"
+
+perm_times<-100
+background_data_use<-Velten_HSPC
+
+num_genes<-500
+
+SCA.refP<-extract_reference_profile(dat.sce.filt=ref_data_use, label = ref_cell_type_use,
+                                      num_signatures =num_genes)
+SCA_res<-SCA(dat.sce.filt=query_data_use,cor.method='spearman', ref_profile=SCA.refP,
+               num_perm=perm_times,data.use='logcounts',
+               rand.features.use='across.sample.refp.gene.permutation', ref_data_null_dist = background_data_use)
+res.list<-list('lthsc'=SCA_res)
+
+test.summary<-SCA_res_summary(res.list)
+test.assign<-SCA_res_assign(res.list)
+test.summary
+head(test.assign$lthsc)
+```
+
