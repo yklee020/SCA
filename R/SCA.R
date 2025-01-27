@@ -169,15 +169,15 @@ calc_obs_null_dist<-function(obs_corr_coeff,null_corr_coeff){
   return(CC_obs_null)
 }
 calc_SCA_FDR<-function(PCC_obs_null){
-  library(qvalue)
+  #library(qvalue)
   #calculate positive PCC FDR
-  pvalues_pos<- empPvals(stat = PCC_obs_null$stat, stat0 = PCC_obs_null$stat0)
+  pvalues_pos<- qvalue::empPvals(stat = PCC_obs_null$stat, stat0 = PCC_obs_null$stat0)
   FDR_pos<-tryCatch({
-    qvalue(p = pvalues_pos)
+    qvalue::qvalue(p = pvalues_pos)
   },error=function(err){
     cat("An error occurred:", conditionMessage(err), "\n")
     print('trying pi0=1: BH method')
-    qvalue(p = pvalues_pos,pi0 = 1)
+    qvalue::qvalue(p = pvalues_pos,pi0 = 1)
 
   })
 

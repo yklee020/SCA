@@ -17,6 +17,10 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports:
-  scran, 
-  dplyr,
-  SingleCellExperiment
+    scran,
+    dplyr,
+    SingleCellExperiment,
+    qvalue,
+    caret,
+    pROC,
+    PRROC

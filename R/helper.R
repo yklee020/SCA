@@ -1,7 +1,7 @@
 
 SCA_evaluate<-function(True_class, SCA_res, evaluating_class,fdr_cutoff=0.05,eval_mode='prec_recall'){
   #SCA_specific evaluation by adding fdr cutoff to set pred_clss
-  library(caret)
+  #library(caret)
   true_cls<-True_class
   #pred_cls<-Pred_class
   pred_cls<-ifelse((SCA_res$qval<=fdr_cutoff & SCA_res$PCC>0),evaluating_class,'other')
@@ -13,7 +13,7 @@ SCA_evaluate<-function(True_class, SCA_res, evaluating_class,fdr_cutoff=0.05,eva
     pred_cls.n<-ifelse(pred_cls==evaluating_class,evaluating_class,'other')%>% factor(levels = c(evaluating_class,'other'))
   }
 
-  conf.m<-confusionMatrix(pred_cls.n,true_cls.n, mode=eval_mode,positive=evaluating_class)
+  conf.m<-caret::confusionMatrix(pred_cls.n,true_cls.n, mode=eval_mode,positive=evaluating_class)
   perfm<-conf.m$byClass[c('Balanced Accuracy','Sensitivity','Specificity', 'Precision','Recall','F1')]
   #conf.m<-table(true_cls.n,pred_cls.n)
   #add auroc and auprc
@@ -53,15 +53,15 @@ get_SCA_perfm_cutoff<-function(True_class, SCA_res, evaluating_class,eval_mode='
 
 
 AUPRC_AURPC<-function(response, label){
-  library(pROC)
-  library(PRROC)
+  #library(pROC)
+  #library(PRROC)
   #library(caret)
-  pROCroc<-roc(label,response)$auc %>% as.numeric()
+  pROCroc<-pROC::roc(label,response)$auc %>% as.numeric()
 
   sc1=response[label==1]
   sc0=response[label==0]
-  roc<-roc.curve(scores.class0 = sc1, scores.class1 = sc0,curve=F )
-  pr<-pr.curve(scores.class0 = sc1, scores.class1 = sc0,curve=F )
+  roc<-PRROC::roc.curve(scores.class0 = sc1, scores.class1 = sc0,curve=F )
+  pr<-PRROC::pr.curve(scores.class0 = sc1, scores.class1 = sc0,curve=F )
 
 
 
