@@ -14,7 +14,20 @@ extract_reference_profile(
 )
 }
 \arguments{
-\item{lfc_slot}{}
+\item{dat.sce.filt}{QCed reference data as SCE obj}
+
+\item{label}{cell type of interest to compute DEG using scoreMarkers function from scran}
+
+\item{num_signatures}{number of}
+
+\item{up_only}{use up-regulated genes only if prompted}
+
+\item{rank_slot}{decide which rank slot from scoreMarkers function results}
+
+\item{lfc_slot}{decide which lfc slot from scoreMarkers function results}
+}
+\value{
+return reference profile with genes and lfc values from scoreMarkers function result
 }
 \description{
 extract_reference_profile

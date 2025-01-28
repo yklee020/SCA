@@ -14,10 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, include=FALSE}
 library(SCA)
 library(dplyr)
 library(tibble)
+library(SingleCellExperiment)
 ```
 
 This is the introduction to Single cell Correlation Analysis (SCA). 
@@ -33,7 +34,7 @@ data("vanGalen_HSPC")
 ```
 
 user can use extract_reference_profile function to extract reference profile from scRNAseq data
-```{r extract_reference_profile}
+```{r SCA_single}
 
 ref_data_use<-Velten_HSPC
 query_data_use<-Velten_HSPC
@@ -57,4 +58,44 @@ test.assign<-SCA_res_assign(res.list)
 test.summary
 head(test.assign$lthsc)
 ```
+
+```{r SCA_multiple}
+
+ref_data_use<-Velten_HSPC
+query_data_use<-Velten_HSPC
+
+perm_times<-100
+background_data_use<-Velten_HSPC
+
+num_genes<-500
+
+SCA.refP.mult<-extract_refp_mult(reference_data=ref_data_use, cell_type_slot='SCA_cls',num_signatures=500)
+
+#SCA.refP.mult.n<-SCA.refP.mult[6]
+
+sca_mult_test<-SCA_multiple(query_data=query_data_use,cor.method='spearman', ref_profiles=SCA.refP.mult,
+                            num_perm=100,data.use='logcounts',
+                            rand.features.use='across.sample.refp.gene.permutation', ref_data_null_dist=background_data_use)
+
+# 
+# SCA.refP<-extract_reference_profile(dat.sce.filt=ref_data_use, label = ref_cell_type_use,
+#                                       num_signatures =num_genes)
+# SCA_res<-SCA(dat.sce.filt=query_data_use,cor.method='spearman', ref_profile=SCA.refP,
+#                num_perm=perm_times,data.use='logcounts',
+#                rand.features.use='across.sample.refp.gene.permutation', ref_data_null_dist = background_data_use)
+# res.list<-list('lthsc'=SCA_res)
+
+test.mult.summary<-SCA_res_summary(sca_mult_test)
+test.mult.assign<-SCA_res_assign(sca_mult_test)
+test.mult.summary$`LT-HSC`
+head(test.mult.assign$lthsc)
+```
+
+Self-renweal HSCs 
+```{r}
+
+
+```
+
+AML?
 

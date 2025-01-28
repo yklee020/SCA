@@ -2,17 +2,15 @@
 
 #' extract_reference_profile
 #'
-#' @param dat.sce.filt
-#' @param label
-#' @param num_signatures
-#' @param up_only
-#' @param rank_slot
-#' @param lfc_slot
+#' @param dat.sce.filt QCed reference data as SCE obj
+#' @param label cell type of interest to compute DEG using scoreMarkers function from scran
+#' @param num_signatures number of
+#' @param up_only use up-regulated genes only if prompted
+#' @param rank_slot decide which rank slot from scoreMarkers function results
+#' @param lfc_slot decide which lfc slot from scoreMarkers function results
 #'
-#' @return
+#' @return return reference profile with genes and lfc values from scoreMarkers function result
 #' @export
-#'
-#' @examples
 extract_reference_profile<-function(dat.sce.filt, label, num_signatures=500, up_only=FALSE,rank_slot='rank.AUC',lfc_slot='median.logFC.cohen'){
   #rank_slot can be c(min.AUC,mean.AUC,median.AUC)
   #I chose to use ScoreMarker function and their AUC based ranking system - take median cohen's D lfc as realative expression values
@@ -46,6 +44,14 @@ extract_reference_profile<-function(dat.sce.filt, label, num_signatures=500, up_
 }
 
 
+#' Title
+#'
+#' @param dat.sce input query scRAseq data as SCE obj
+#' @param genelist.df reference profile goes in here
+#' @param gene_to_use reference profile's colname for gene names
+#'
+#' @return sorted query data (SCE obj) for SCA running
+#' @export
 prep_query_dat<-function(dat.sce,genelist.df,gene_to_use='hGene'){
   # select genes, reorder and subset query data with reference profile genes
   query_dat_DE_index<-c()
@@ -191,15 +197,13 @@ calc_SCA_FDR<-function(PCC_obs_null){
 #' @param dat.sce.filt filtered SingleCellExperiment object
 #' @param cor.method using spearman's correlation coefficient as default
 #' @param ref_profile takes reference profile that either user provided or by extract_reference_profile function
-#' @param num_perm
-#' @param data.use
-#' @param rand.features.use
-#' @param ref_data_null_dist
+#' @param num_perm set number of permutations
+#' @param data.use which assay to use whitin SCE obj. default to logcounts
+#' @param rand.features.use randomization method to use
+#' @param ref_data_null_dist input background data to use. if not provided, query data will be used as a backgrouund dataset
 #'
 #' @return list containing 1)a dataframe with correlation coefficients (CC), p-values and FDR-q values, 2) list of a) observed CC distribution and b)null CC distribution
 #' @export
-#'
-#' @examples
 SCA<-function(dat.sce.filt,cor.method='spearman', ref_profile=NULL, num_perm=500,data.use=c('fccounts','logcounts'),
               rand.features.use='across.sample.refp.gene.permutation', ref_data_null_dist=NULL){
   #add variable for what genes to use in ref_profile
